@@ -42,11 +42,16 @@ div.encabezado-de-top ul{
 div.encabezado-de-top ul li{
     text-transform: lowercase;
     padding: 1px;
-    
+    list-style: none;
+}
+
+li img.correo, li img.telefono{
+    width: 13px;
+    height: 13px;
 }
 
 div.encabezado-de-top form{
-    
+    display: inline;
     padding: 0px 10px;
 }
 
@@ -69,6 +74,7 @@ div.encabezado-de-top form input{
     place-items: start;
     
 }
+
 div.encabezado-de-top form input::placeholder { 
     color: #76959Fcc;   /*color de letra*/
     letter-spacing: 1px; /*sepacion enre letras*/
@@ -135,6 +141,7 @@ div.encabezado-de-bot{
 
 div.logo{
     display: flex;
+    padding-right: 40px;
 }
 
 div.logo img.logo{
@@ -193,6 +200,9 @@ ul.botonera li a:hover, ul.botonera li a.pag-actual {
 /*////////////////termina botonera//////////////////////////*/
 /*////////////////termina encabezado////////////////////////*/
 
+
+/*////////////////comienza cuerpo//////////////////////////*/
+
 div.imagen-bot-cabecera{
     background-color: black;
     
@@ -211,11 +221,15 @@ div.imagen-bot-cabecera img{
 
 
 div.pie-de-pag{
-    padding: 20px 40px;
+    padding: 20px 80px;
     display: flex;
-    
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
+}
+
+div a.politicas{
+    color: #fff;
 }
 
 div.pie-de-pag div.redes-sociales{
@@ -227,22 +241,25 @@ div.pie-de-pag div.redes-sociales ul.redes-sociales{
     display:flex;
     list-style:none;
     justify-content: flex-end;
-    padding: 10px 50px;
+    padding: 8px 18px;
 }
 
 
 img.redes{
+    border-radius: 10px;
     width: 20px;
     padding: 7px;
+    margin: 2px;
 }
 
 img.redes:hover{
-    background-color: red;
+    background-color: #01111A;
 }
 
 p.fin{
     text-align: center;
     width: 100%;
+    margin: 5px;
 }
 
 /*////////////////termina pie de pag//////////////////////////*/
