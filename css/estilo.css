@@ -7,6 +7,64 @@
     margin: 0px;
     padding: 0px;
 }
+            /*font size*/
+h1{
+    font-size: 32px;
+}
+
+h2{
+    font-size: 30px;
+}
+
+.parrafo-inicial::first-letter{
+    font-size: 25px;
+}
+
+.logo p.logo{
+    font-size: 22px;
+}
+
+h3{
+    font-size: 20px;    
+}
+
+h4{
+    font-size: 18px;
+}
+
+body, .contenedor-contacto input , form.contacto textarea.mensaje, p{
+    font-size: 16px;
+}
+
+.encabezado-superior input, .captcha input , textarea{
+    font-size: 15px;
+}
+
+label{
+    font-size: 14px;
+}
+
+.encabezado-superior button{
+    font-size: 13px;
+}
+
+
+                /* text-transform */
+h1 , h2 , h3 , h4 , .contenedor-tabla , .validacion button{
+    text-transform: capitalize;
+}
+
+p{
+    text-transform: initial;
+}
+
+.encabezado-superior li{
+    text-transform: lowercase;
+}
+
+.validacion {
+    text-transform: none;
+}
 
          /*font size*/
 html{
@@ -634,6 +692,7 @@ form.contacto input{
 }
 
 
+/* termina contacto.html */
 
 form.contacto .cont-interno label{
     padding: 0px 15px;
