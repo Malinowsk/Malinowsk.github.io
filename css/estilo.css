@@ -721,7 +721,6 @@ p.fin{
     position: absolute;
     top: 54px;
     background-color: #01111A;
-    display: none;
 }
 
 .encabezado-superior ul{
@@ -746,8 +745,13 @@ form.sesion{
 .contenedor-tabla{
     overflow-y: auto;
 }
-
+/*
 nav.menu{
+    display: none;
+}
+*/
+
+.invisibilidad{
     display: none;
 }
 
@@ -784,7 +788,7 @@ nav.menu{
     }
 
     header{
-        top: -60px;
+        top: 0px;
     }
 
     header div.encabezado-inferior button.menu{
@@ -875,7 +879,6 @@ nav.menu{
         position: inherit;
         top: auto;
         background-color: #1f3d4f;
-        display: none;
     }
 
     .encabezado-superior ul{
@@ -986,9 +989,17 @@ nav.menu{
         top: -120px;
     }
     
+    .visibilidad{
+        display: block;
+    }
+
 }
 
 @media only screen and (min-width: 915px)  {
+
+    header{
+        top: -60px;
+    }
     
     .encabezado-superior {
         display: flex;
