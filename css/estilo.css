@@ -55,7 +55,7 @@ label, .validacion button{
 
 
                 /* text-transform */
-h1 , h2 , h3 , h4 , .validacion button, .cont-compra button{
+h1 , h2 , h3 , h4 , .validacion button, .btn{
     text-transform: capitalize;
 }
 
@@ -101,14 +101,14 @@ th, .libro .descripcion , .captcha, .tabla-contenido, header div.encabezado-infe
     background-color: #04344E;
 }
 
-.validacion button, .cont-compra button{
+.validacion button, .btn{
     background-color: #286090;
 }
 
                     /* color de texto */
 
 .encabezado-superior , .encabezado-inferior, .validacion .captcha p, footer, .encabezado-superior button, 
-.contenedor-para-centrado h3, .descripcion h4:hover, th, .descripcion p:hover , .descripcion h3 , div a:hover.politicas , .validacion button, .tabla-contenido ul a:hover, header div.encabezado-inferior button.menu, .cont-compra button{
+.contenedor-para-centrado h3, .descripcion h4:hover, th, .descripcion p:hover , .descripcion h3 , div a:hover.politicas , .validacion button, .tabla-contenido ul a:hover, header div.encabezado-inferior button.menu, .btn{
     color: #ffffff;
 }
 
@@ -506,9 +506,9 @@ table{
     padding: 8px 0px;
 }
 
-tr , td , th {
+td , th{
     width: 250px;
-    padding: 3px;
+    padding: 3px 10px;
 }
 
 td img{
@@ -559,6 +559,7 @@ td img{
 a{
     padding: 2px;
     margin-top: 5px;
+    cursor: pointer;
 }
 
 /* comienza servicios.html */
@@ -773,10 +774,53 @@ nav.menu{
     margin-top: 10px;
 }
 
-.cont-compra button{
+.filtro{
+    display: flex;
+    justify-content: space-between;
+}
+
+.filtro select{
+    width: 150px;
+    padding: 8px;
+    border-color: #d8e1e4;
+}
+
+.filtro input{
+    padding: 8px;
+    border-color: #d8e1e4;
+}
+
+.btn{
     padding: 10px;
     border: 0px;
     border-radius: 4px;
+}
+
+.btn:hover{
+    background-color: #f8ac18;
+}
+
+.paginado-tabla{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.paginado-tabla p{
+    text-align: center;
+    width: 50px;
+}
+
+.paginado-tabla .btn{
+    width: 80px;
+}
+
+.paginado-tabla div{
+    border: 2px solid #d8e1e4;
+    border-radius: 4px;
+    padding: 7px 20px;
+    margin: 0px 20px;
 }
 
 .cont-interno select{
@@ -785,7 +829,22 @@ nav.menu{
     height: 50px;
 }
 /* TERMINA COMPRAS*/
-    
+
+
+div.contenedor-tabla table td button {
+    margin: 5px;
+    padding: 8px;
+    border: 0px;
+    background-color: #04344E;
+    color: white;
+    border-radius: 4px;
+}
+div.contenedor-tabla table td input {
+    width: 130px;
+    text-align: center;
+}
+
+
 @media only screen and (min-width: 768px)  {
 
     div.encabezado-inferior{ 
@@ -1022,6 +1081,16 @@ nav.menu{
 
     .contenedor-form{
         margin: 0px 94px;
+    }
+
+    .tabla-compras{
+        table-layout: fixed;
+    }
+
+    .tabla-compras td, .tabla-compras th{
+        width: 16.666%;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     
 }
