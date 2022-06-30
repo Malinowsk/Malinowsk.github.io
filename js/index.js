@@ -7,14 +7,22 @@ function partialRender(){
     window["servicios"].addEventListener("click",(event)=>{ push(event)});
     window["compras"].addEventListener("click",(event)=>{ push(event)});
     window["contacto"].addEventListener("click",(event)=>{ push(event);});
-    
-    window.addEventListener("popstate", event => { 
+
+
+    window.addEventListener("popstate", (event) => { 
         // Tome la identificación del estado del historial
-        let id = event.state.id; 
+        let id;
+        if(event.state != null)
+            id = event.state.id;
+        else{
+            let direccion = event.currentTarget.location.pathname;
+            id = direccion.slice(1);
+        } 
         seleccionarTab(id); 
         cargarContenido(id);
     });
 
+    despliegeMenu();
     cargarInicio();
     
     function cargarInicio(){
@@ -56,49 +64,140 @@ function partialRender(){
                 }
             }
             else{
-                contenedor.innerHTML = "error 202";
+                contenedor.innerHTML = `<h1>Error</h1>
+                                        <p>El error es: ${respuesta.status} - ${respuesta.statusText}</p>
+                                        <p>La url: "${respuesta.url}" esta mal especificada</p>
+                                        <ul>Solucion: cambiar la carpeta raiz del servidor local
+                                            <li> - Mal: ~/site/inicio.html</li>
+                                            <li> + Bien: ~/inicio.html</li>
+                                        </ul>`;
             }
         }
         catch(error){
-            contenedor.innerHTML = "error";
+            contenedor.innerHTML = "error de conexión";
         }
     }
+
     function capitalizarPrimeraLetra(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
-      }
+    }
+
+    function despliegeMenu(){
+    
+        const INVISIBILIDAD = "invisibilidad"; //nombre de la clase que contiene display none
+    
+        document.querySelector("#btn-menu").addEventListener("click",function(e){mostrarOcultarMenuSesion("#menu","#header-superior")}); //pongo a escuchar el evento click para mostrar y ocultar la barra de navegacion
+        document.querySelector("#btn-sesion").addEventListener("click",function(e){mostrarOcultarMenuSesion("#header-superior","#menu")}); //pongo a escuchar el evento click para mostrar y ocultar el inicio de sesion
+    
+        //funcion que hace toggle de la clase invisibilidad al elemento mostrar (dado como paramentro) y asegura que tenga la clase invi el elem ocultar(dado como paramentro)
+        function mostrarOcultarMenuSesion(mostrar,ocultar){
+            let elem_cambiar = document.querySelector(mostrar); // capturo el elem a cambiar
+            let elem_ocultar = document.querySelector(ocultar); // capturo el elem a ocultar
+            if (elem_cambiar.classList.contains(INVISIBILIDAD) && !elem_ocultar.classList.contains(INVISIBILIDAD)) // pregunto si el cambio es para mostrar y aseguro que este oculto el otro elemento
+                elem_ocultar.classList.add(INVISIBILIDAD); // lo oculto
+            elem_cambiar.classList.toggle(INVISIBILIDAD); // lo cambio
+        }
+    
+    }
 
     // funcion utilizada para compras.html
     function actualizarCompraDePacks(){
         
-        const url = "https://62a95d68ec36bf40bdb68e4e.mockapi.io/api/pedidoss"; 
-        let pag_actual = 1;
-
-        obtenerTabla(pag_actual);
+        const url_base = "https://62a95d68ec36bf40bdb68e4e.mockapi.io/api/pedidoss";
+        //let pag_actual = 1;
+        //let url_actual=`${url_base}?p=${pag_actual}&l=10`; //https://62a95d68ec36bf40bdb68e4e.mockapi.io/api/pedidoss?p=1&l=10
+        let url_actual=[url_base,"?","p=",1,"&l=10"]
         
+        obtenerTabla();
+       
         let form = document.querySelector("#form"); //formulario
         form.addEventListener("submit",function(e){  //pongo a escuchar el evento submit del formulario
             actualizarTabla(e);
         });
     
-        //let reset = document.querySelector("#reset"); //boton reset
-        //reset.addEventListener("click", function(){  // pongo a escuchar el evento click del boton reset
-        //    tabla_datos = [];   //vacio tabla
-        //    obtenerTabla(pag_actual); // mostrar tabla por web
-        //});
+        let reset = document.querySelector("#reset"); //boton reset
+        reset.addEventListener("click", function(){  // pongo a escuchar el evento click del boton reset
+            this.innerHTML="Espere";
+            let tabla = document.querySelector("#tabla-body");
+            tabla.innerHTML=" Borrando, espere unos segundos... ";
+            borrarTablaCompleta();
+        });
+
+      async function borrarTablaCompleta(){
+        try{
+            let respuesta= await fetch(url_base); 
+            if(respuesta.ok){                               
+                let tabla = await respuesta.json();
+                borrarTodasLasFilas(tabla);
+            } 
+            else{
+                console.log(`La url: "${respuesta.url}" esta mal especificada`);
+                reset.innerHTML="Resetear";
+            }
+        }
+        catch(error){
+                console.log("error de conexión");
+                reset.innerHTML="Resetear";
+        }
+      }
+
+      async function borrarTodasLasFilas(tabla){
+        try{
+            let respuesta= await fetch(`${url_base}/${tabla[tabla.length-1].id}`, { "method":"DELETE"});
+            if(respuesta.status === 200){
+                if(tabla.length===1){
+                    obtenerTabla();
+                    document.querySelector("#prim-fila").innerHTML= 0;
+                    document.querySelector("#ult-fila").innerHTML = 0;
+                    reset.innerHTML="Resetear";
+                }
+                else{
+                    tabla.pop();
+                    borrarTodasLasFilas(tabla);
+                }
+            } 
+            else{
+                console.log(`La peticion DELETE fallo, error: ${respuesta.status}`);
+                reset.innerHTML="Resetear";
+            };
+        }
+        catch(error){
+            console.log("error de conexión"+ tabla[tabla.length-1]);
+            reset.innerHTML="Resetear";
+        };
+      }
+
 
         let atras = document.querySelector("#atras");
         atras.addEventListener("click", function(){
-            if (pag_actual !== 1){
-                pag_actual= pag_actual - 1;
-                obtenerTabla(pag_actual);
+            if (url_actual[3] !== 1){
+                url_actual[3]--;
+                obtenerTabla();
             }
         });
 
         let siguiente = document.querySelector("#siguiente");
         siguiente.addEventListener("click", function(){ 
-            pag_actual++;
-            obtenerTabla(pag_actual);
+            url_actual[3]++;
+            obtenerTabla();
         });
+
+        let form_filtro = document.querySelector("#filtrado");
+        form_filtro.addEventListener("submit", function(e){
+            e.preventDefault();
+            let filtro = getFilter();
+            url_actual[1] = filtro;
+            obtenerTabla();
+        });
+
+        function getFilter(){
+            let form = new FormData(form_filtro);
+            if(form.get("valor-filtro")=="")
+                return "?";
+            else
+                return "?" + form.get("filtro").toLowerCase() + "=" + form.get("valor-filtro") + "&";
+        }
+
 
         function actualizarTabla(e){
     
@@ -130,42 +229,48 @@ function partialRender(){
     
         async function enviarFila(fila,cant){
             try{
-                let respuesta= await fetch(url, {   "method":"POST", 
-                                                    "headers": {"Content-type": "application/json"}, 
-                                                    "body": JSON.stringify(fila) });
-    
+                let respuesta= await fetch(url_base, {"method":"POST", 
+                                                      "headers": {"Content-type": "application/json"}, 
+                                                      "body": JSON.stringify(fila) });
                 if(respuesta.status === 201){
                     if(cant==1)
-                        obtenerTabla(pag_actual);
-                    else
-                    {
+                        obtenerTabla();
+                    else{
                         enviarFila(fila,cant-1);
                     }
                 } 
                 else
-                    console.log("no 201");
+                    console.log(`La peticion POST no fue exitosa error: ${respuesta.status}`);
             }
-            catch(errorConexion){console.log("error")};
+            catch(error){console.log("error de conexión")};
         }
+
+        function obtenerUrl(arr_url){
+            let retorno = "";
+            for(let parte of arr_url){
+                retorno+= parte;
+            }
+            return retorno;
+        }
+
     
-        async function obtenerTabla(nro_pag){
-            
+        async function obtenerTabla(){
             try{
-                let respuesta= await fetch(`${url}?p=${nro_pag}&l=10`); ///?p=1&l=10
+                let respuesta= await fetch( obtenerUrl(url_actual) ); ///?p=1&l=10
                 if(respuesta.ok){                               
-                    let tabla = await respuesta.json(); 
-                    if(tabla.length==0){
-                        pag_actual--;
-                        obtenerTabla(pag_actual);
+                    let tabla = await respuesta.json();
+                    if( (tabla.length==0) && (url_actual[3]>1) ){
+                        url_actual[3]--;
+                        obtenerTabla();
                     }
                     else{
                         mostrarTabla(tabla);
                     }
                 } 
                 else
-                    console.log("no 202")
+                    console.log(`La url: "${respuesta.url}" esta mal especificada`);
             }
-            catch(errorConexion){console.log(errorConexion)};
+            catch(error){console.log("error de conexión")};
         }
     
         //funcion que muestra en web la tabla almacenada en variable
@@ -195,22 +300,22 @@ function partialRender(){
                 document.querySelector(`#confirmar-${id}`).addEventListener("click",function(){confirmarFila(this,id)});
                 document.querySelector(`#confirmar-${id}`).classList.add("invisibilidad");
 
-                document.querySelector("#prim-fila").innerHTML= `${((pag_actual-1)*10) + 1}`;
-                document.querySelector("#ult-fila").innerHTML = `${((pag_actual-1)*10) + tabla_datos.length}`;
+                document.querySelector("#prim-fila").innerHTML= `${((url_actual[3]-1)*10) + 1}`;
+                document.querySelector("#ult-fila").innerHTML = `${((url_actual[3]-1)*10) + tabla_datos.length}`;
 
             }
         }
     
         async function borrarFila(id){
             try{
-                let respuesta= await fetch(`${url}/${id}`, { "method":"DELETE"});
+                let respuesta= await fetch(`${url_base}/${id}`, { "method":"DELETE"});
                 if(respuesta.status === 200){
-                    obtenerTabla(pag_actual);
+                    obtenerTabla();
                 } 
                 else
-                    console.log("no 202");
+                    console.log(`La peticion DELETE fallo, error: ${respuesta.status}`);
             }
-            catch(errorConexion){console.log("error")};
+            catch(error){console.log("error de conexión")};
         }
     
         function editarFila(boton){
@@ -246,16 +351,16 @@ function partialRender(){
     
         async function guardarCambiosFila(fila,id){
             try{
-                let respuesta= await fetch(`${url}/${id}`, {   "method":"PUT", 
-                                                    "headers": {"Content-type": "application/json"}, 
-                                                    "body": JSON.stringify(fila) });
+                let respuesta= await fetch(`${url_base}/${id}`, {"method":"PUT", 
+                                                                 "headers": {"Content-type": "application/json"}, 
+                                                                 "body": JSON.stringify(fila) });
     
                 if(respuesta.status === 200)
-                    obtenerTabla(pag_actual);
+                    obtenerTabla();
                 else
-                    console.log("no 201");
+                    console.log(`La peticion PUT no fue exitosa error: ${respuesta.status}`);
             }
-            catch(errorConexion){console.log("error")};
+            catch(error){console.log("error de conexión")};
         }
     
     
