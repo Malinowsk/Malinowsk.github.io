@@ -307,6 +307,7 @@ function principal(e){
            
             let fila_modificada = {}; // se crea fila json
     
+            
             fila_modificada.usuario =arregloDeDatos[0].firstElementChild.value; 
             fila_modificada.email=arregloDeDatos[1].firstElementChild.value;
             fila_modificada.telefono=arregloDeDatos[2].firstElementChild.value;
